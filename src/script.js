@@ -4,6 +4,37 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import gsap from 'gsap'
+
+/**
+ * Loaders
+ */
+
+const loadingBarElement = document.querySelector('.loading-bar')
+const hideElement = document.querySelector('.hide-element')
+const hideElement2 = document.querySelector('.hide-element2')
+
+console.log(hideElement);
+
+const loadingManager = new THREE.LoadingManager(
+ 
+    // Loaded
+    () =>{
+        window.setTimeout(() => {
+            gsap.to(overlayMaterial.uniforms.uAlpha, {duration: 3, value:0})
+            loadingBarElement.classList.add('ended')
+            loadingBarElement.style.transform = ''
+            hideElement.style.opacity = '1'
+            hideElement2.style.opacity = '1'
+        }, 500)
+    },
+ 
+     // Progress
+    (itemURL, itemLoaded, itemsTotal) =>{
+        const progressRatio =  itemLoaded / itemsTotal
+        loadingBarElement.style.transform = 'scale(' +progressRatio + ')'
+    },
+)
 
 /**
  * Base
@@ -32,17 +63,34 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
+ * Overlay
+ */
+ const overlayGeometry = new THREE.PlaneBufferGeometry(2,2,1,1)
+ const overlayMaterial = new THREE.ShaderMaterial({
+     transparent: true,
+     uniforms:
+     {
+         uAlpha: {value: 1}
+     },
+     vertexShader: 'void main(){ gl_Position = vec4(position, 1.0);}',
+     fragmentShader: 'uniform float uAlpha; void main(){ gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);}'
+ })
+ const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
+ 
+ scene.add(overlay)
+
+/**
  * Loaders
  */
 // Texture loader
-const textureLoader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader(loadingManager)
 
 // Draco loader
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('draco/')
 
 // GLTF loader
-const gltfLoader = new GLTFLoader()
+const gltfLoader = new GLTFLoader(loadingManager)
 gltfLoader.setDRACOLoader(dracoLoader)
 
 /**
