@@ -13,8 +13,8 @@ import gsap from 'gsap'
 const loadingBarElement = document.querySelector('.loading-bar')
 const hideElement = document.querySelector('.hide-element')
 const hideElement2 = document.querySelector('.hide-element2')
-
-console.log(hideElement);
+const magicMouse = document.querySelector('#magicMouseCursor')
+const magicPointer = document.querySelector('#magicPointer')
 
 const loadingManager = new THREE.LoadingManager(
  
@@ -26,6 +26,12 @@ const loadingManager = new THREE.LoadingManager(
             loadingBarElement.style.transform = ''
             hideElement.style.opacity = '1'
             hideElement2.style.opacity = '1'
+            
+            window.addEventListener('mousemove', e => {
+                magicMouse.style.opacity = '1'
+                magicPointer.style.opacity = '1'
+            });
+            
         }, 500)
     },
  
