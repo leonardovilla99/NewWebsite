@@ -8,6 +8,7 @@ html,
 body
 {
     overflow: hidden;
+    background-color: black;
 }
 
 .webgl
@@ -97,6 +98,10 @@ body
         transform: translateX(-50%);
         z-index: 3;
     }
+    #logo img{
+        width: 100px;
+        height: 100px;
+    }
     #menu{
         margin: 0;
         position: absolute;
@@ -108,7 +113,5 @@ body
     }
     #menu p{
         text-align: center;
-        margin: 80px 0;
-        font-size: 50px;
     }
 }
